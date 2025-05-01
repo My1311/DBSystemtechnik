@@ -1,0 +1,3 @@
+C:/Users/lengo/CLionProjects/DBSystemtechnik/cmake-build-debug/CMakeFiles/DBSystemtechnik.dir
+C:/Users/lengo/CLionProjects/DBSystemtechnik/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/lengo/CLionProjects/DBSystemtechnik/cmake-build-debug/CMakeFiles/rebuild_cache.dir
