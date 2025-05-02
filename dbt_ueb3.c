@@ -112,7 +112,7 @@ main()
             strcat ((char *) sel_anweisung.arr, 
                "FROM DBS_TAB_LEHRVERANSTALTUNG");
             sel_anweisung.len = strlen((char *) sel_anweisung.arr); 
-            printf("\n%s\n", sel_anweisung.arr);
+
 /*  Vorbereitung der Anfrage "aktuelle_anweisung" (Methode 3)  */
             EXEC SQL prepare aktuelle_anweisung from :sel_anweisung;
 
@@ -145,20 +145,27 @@ main()
             
 
 /*  Ausgabe  */
-               printf("%-10d\t%-40s\t", lehrveranstaltung.lv_nr, lehrveranstaltung.lv_name.arr);
+
+                if (lehrveranstaltung_ind.lv_nr_ind == -1) {
+                    printf("%-20s\t", "- ANGABE FEHLT -");
+                }
+                else {
+                    printf("%-10d\t%-40s\t", lehrveranstaltung.lv_nr, lehrveranstaltung.lv_name.arr);
+                }
 
                printf("%c\n", lehrveranstaltung.fb_nr);
+ /*  Gebrauch der Indikator-Variable  */
             
                total_gefunden++;
 
 /*  Ende der Cursor-Schleife  */
            }
 
-           printf("\nDiese Lehrveranstaltungen wurden gefunden:\n");
+           printf("\nDiese oberen Lehrveranstaltungen wurden gefunden.\n");
 /*  Schliessen des Cursors c_aktuelle_anweisung  */
             EXEC SQL close c_aktuelle_anfrage;
 
-            printf("\nWelche Lehrveranstaltung wollen Sie löschen?\nGeben Sie bitte die Nummer an:");
+            printf("\nWelche Lehrveranstaltung wollen Sie löschen?\nGeben Sie bitte die Lehrveranstaltungsnummer an: (Abbruch mit Nummer 0)\n");
             gets(temp_char);
             in_lv_nr = atoi(temp_char);
             if (strlen((char *) temp_char) == 0)
@@ -170,14 +177,15 @@ main()
                "Where LV_NR=:in_lv_nr");
             del_anweisung.len = strlen((char *) del_anweisung.arr);
 
-            EXEC SQL prepare PROF_HAELT_LV_loeschen from :del_anweisung;
 
+            EXEC SQL prepare PROF_HAELT_LV_loeschen from :del_anweisung;
 
             strcpy ((char *) del_anweisung.arr,
                "DELETE FROM DBS_TAB_LV_ORT ");
             strcat ((char *) del_anweisung.arr,
                "Where LV_NR=:in_lv_nr");
             del_anweisung.len = strlen((char *) del_anweisung.arr);
+
 
             EXEC SQL prepare lv_ort_loeschen from :del_anweisung;
 
@@ -187,6 +195,7 @@ main()
                "Where LV_NR=:in_lv_nr");
             del_anweisung.len = strlen((char *) del_anweisung.arr);
 
+
             EXEC SQL prepare PRUEFUNG_loeschen from :del_anweisung;
 
             strcpy ((char *) del_anweisung.arr,
@@ -194,6 +203,7 @@ main()
             strcat ((char *) del_anweisung.arr,
                "Where LV_NR=:in_lv_nr");
             del_anweisung.len = strlen((char *) del_anweisung.arr);
+
 
             EXEC SQL prepare LEHRVERANSTALTUNG_loeschen from :del_anweisung;
 
@@ -212,12 +222,11 @@ main()
             printf("\nEnde gewuenscht !\n");
             break;
         }
-        printf("\nKeine Daten gefunden - Neuer Versuch.\n");
 
 /*  Ende der aeusseren Schleife  */
     }
 
-    printf("\n\nAnzahl der gefundenen Datensaetze war %d.\n", total_gefunden); 
+    printf("\n\nAnzahl der gefundenen Datensaetze war %d.\n",total_gefunden);
     printf("\nHave a Nice Day - and Don't Forget to Lern for DBT ...\n\n\n");
 
 /* Bestaetigung  und Disconnect von der Datenbank,  
