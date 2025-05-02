@@ -11,7 +11,6 @@
 
 /*  Definition von Konstanten fuer VARCHAR-Laengen. */
 #define     NAME_LEN      35
-#define     BERUF_LEN     30
 #define     LV_NR_LEN      11
 #define     PWD_LEN       10
 #define     ANWEISUNG_LEN 300
@@ -36,9 +35,9 @@ EXEC SQL BEGIN DECLARE SECTION;
 /*  Definition von Host-Variablen fuer die Ausgabe. */
     struct
     {
-        int   lv_nr;
-        VARCHAR lv_name;
-        int     fb_nr;
+        int  lv_nr ;
+        VARCHAR lv_name[NAME_LEN];
+        char     fb_nr;
     } lehrveranstaltung;
 
 /*  Definition einer Indikator-Struktur entsprechend 
@@ -109,11 +108,11 @@ main()
 
  /*  Zusammenbau einer SQL-Anweisung mit Host-Variable */
             strcpy ((char *) sel_anweisung.arr, 
-               "SELECT LV_NR, LV_NAME");
+               "SELECT LV_NR, LV_NAME, FB_NR ");
             strcat ((char *) sel_anweisung.arr, 
                "FROM DBS_TAB_LEHRVERANSTALTUNG");
             sel_anweisung.len = strlen((char *) sel_anweisung.arr); 
-
+            printf("\n%s\n", sel_anweisung.arr);
 /*  Vorbereitung der Anfrage "aktuelle_anweisung" (Methode 3)  */
             EXEC SQL prepare aktuelle_anweisung from :sel_anweisung;
 
@@ -142,15 +141,13 @@ main()
                EXEC SQL fetch c_aktuelle_anfrage into :lehrveranstaltung :lehrveranstaltung_ind;
 
 /*  Null-Abschluss der Ausgabe-String-Variablen  */
-               lehrveranstaltung.lv_nr = '\0';
                lehrveranstaltung.lv_name.arr[lehrveranstaltung.lv_name.len] = '\0';
-               lehrveranstaltung.fb_nr = '\0';
             
 
 /*  Ausgabe  */
-               printf("%-10p\t%-20s\t", &lehrveranstaltung.lv_nr, lehrveranstaltung.lv_name.arr);
+               printf("%-10d\t%-40s\t", lehrveranstaltung.lv_nr, lehrveranstaltung.lv_name.arr);
 
-               printf("%6.2f\n", lehrveranstaltung.fb_nr);
+               printf("%c\n", lehrveranstaltung.fb_nr);
             
                total_gefunden++;
 
